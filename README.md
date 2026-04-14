@@ -68,19 +68,31 @@ The AI selects the card with the highest computed score
 ⚡ Ultimate System
 
 Builds over time
+
 Adds powerful effects:
+
 Element	Effect
+
 Fire	+20 damage
+
 Water	1.8x damage
+
 Air	2x damage
+
 Earth	+10 damage
 
 How It Works:
+
 Player selects a card
+
 AI evaluates game state
+
 FSM determines AI behavior
+
 Cards are scored using rules
+
 Best card is selected
+
 Damage & effects are applied
 
 
