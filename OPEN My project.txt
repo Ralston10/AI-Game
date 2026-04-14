@@ -1,0 +1,233 @@
+Abstract
+
+Large Behavioural Models (LBMs) extend the transformer-based principles of large language models into the domain of embodied robotics, enabling robots to generate whole-body actions, adapt to real-world uncertainties, and execute complex tasks through generalization rather than rigid programming. Humanoid robots, which operate in human-centric environments, benefit significantly from LBMs as they require continuous adaptation to dynamic obstacles, uneven terrain, shifting loads, and diverse manipulation tasks.
+
+This paper presents a comprehensive overview of LBM foundations, architectures, multimodal perception systems, training pipelines, and real-world deployment scenarios. We analyze state-of-the-art initiatives such as NVIDIA GR00T, Google RT-2 and RT-X, Tesla Optimus, Agility’s Digit, Sanctuary Phoenix, and BMW–Amazon manufacturing deployments. We further discuss challenges such as safe exploration, real-to-simulation gaps, high-dimensional control, multimodal alignment, and the computational demands associated with large-scale behaviour modeling.
+
+By expanding on existing research directions, we argue that LBMs represent a shift toward general-purpose humanoid foundation models—systems capable of reasoning, predicting physical outcomes, and generating continuous movement. This work synthesizes current methodologies and highlights open problems on the path to scalable, safe, and widely deployable humanoid intelligence.
+
+I. INTRODUCTION
+
+Humanoid robots are being increasingly adopted for tasks requiring dexterity, adaptability and human-like mobility. Traditional robotics pipelines rely heavily on handcrafted controllers, finite state machines, and rule-based systems. These methods are brittle, difficult to scale, and require extensive manual tuning for each new task or environment.
+
+LBMs challenge this paradigm by enabling humanoid robots to learn behaviours end-to-end from demonstrations, motion capture data, simulation rollouts, and real-world teleoperation. Inspired by the sequence learning capabilities of LLMs, LBMs model time-dependent structure in robot motion, predicting the next motor action based on sensor inputs, high-level goals, and historical context.
+
+Slides 3–6 of the project presentation illustrate this underlying principle: LBMs do not output discrete symbolic tokens but produce continuous control signals, whole-body joint trajectories, or abstract motor primitives 
+
+LargeBehavioralModels
+
+. These models unify perception, reasoning, and motor execution into a single architecture, marking a major milestone in embodied AI.
+
+Humanoids operating in unstructured environments—homes, factories, hospitals, disaster zones—must continuously adapt to dynamic stimuli. LBMs allow robots to respond to variabilities such as moving humans, slippery surfaces, deformable objects, and unpredictable events.
+
+This extended abstract builds upon our presentation on “Large Behavioural Models in Humanoid Robotics” by providing deeper analysis and contextual insights for each module and training strategy.
+
+II. METHODS
+A. Foundations of LBM Architecture
+
+LBMs typically comprise four interconnected modules: perception encoders, a world or dynamics model, a behaviour generation policy, and a whole-body controller. Slide 5 visually depicts this relationship and guides the modular understanding of the system 
+
+LargeBehavioralModels
+
+.
+
+1) Multi-Modal Perception Encoders
+
+LBMs integrate many sensor modalities, including:
+
+RGB and depth cameras
+
+LiDAR and structured-light sensors
+
+IMUs, force–torque sensors, pressure sensors
+
+Joint encoders and proprioceptive feedback
+
+Transformers or CNN-based encoders compress these observations into latent representations. This allows the policy to operate with a unified perception space, reducing the burden of designing manual feature extractors.
+
+2) World and Dynamics Model
+
+The world model predicts:
+
+robot balance and stability
+
+object interactions
+
+force dynamics
+
+consequences of motor actions
+
+These predictions are crucial for safe behaviour generation. For instance, a humanoid must anticipate whether shifting its weight may cause a fall.
+
+3) Behaviour Policy (Large Behaviour Model Core)
+
+The policy is typically implemented via:
+
+Transformer decoder for sequential prediction
+
+Decision Transformer (DT) formulation
+
+Behaviour cloning from expert trajectories
+
+Goal-conditioned policy networks
+
+Rather than encoding language, LBMs encode trajectory sequences. The model receives input such as:
+[previous_actions, visual_state, proprioceptive_state, goal_embedding]
+and predicts the next action or trajectory segment.
+
+4) Whole-Body Controller
+
+This final module maps predicted movement primitives to joint torques and motor commands. It ensures:
+
+stability margins
+
+dynamic balance
+
+compliance in human–robot interaction
+
+This is especially important for humanoids, which possess 20–40 DoF and require precise coordination.
+
+B. Perception-to-Action Pipeline
+
+Slide 6 depicts the perception-to-action flow: sensor fusion → scene understanding → predictive modeling → low-level actuation 
+
+LargeBehavioralModels
+
+.
+
+Modern LBMs integrate these steps into an end-to-end differentiable architecture. This unification reduces latency, improves robustness under uncertainty, and allows the model to leverage correlations across perception and control.
+
+C. Training Strategies
+1) Large-Scale Dataset Construction
+
+High-performing LBMs require millions of trajectory samples. Sources include:
+
+motion-capture datasets for locomotion
+
+teleoperation using VR gloves
+
+robotics-specific datasets like RoboNet, BridgeData, Open-X Embodiment
+
+synthetic data from high-fidelity physics simulators
+
+Slide 7 highlights the use of human teleoperation for rich demonstrations, as used by Sanctuary AI and NVIDIA GR00T.
+
+2) Simulation and Real-World Fusion
+
+A key challenge is the Real-to-Sim (R2S) gap, detailed in slide 8. Simulation provides safety and scale, but imperfect physics leads to misalignment. LBMs therefore follow a hybrid pipeline:
+
+Pretrain on synthetic trajectories
+
+Fine-tune using real-world demonstrations
+
+Apply domain adaptation techniques such as dynamics randomization
+
+3) Safe Exploration and Reinforcement Learning
+
+Unlike LLMs, robots exploring randomly can fall, damage hardware, or harm humans.
+Thus LBMs employ:
+
+safe RL constraints
+
+shielded controllers
+
+predictive checkers to reject unsafe actions
+
+human-supervised data collection
+
+III. RESULTS
+
+LBMs have shown significant progress across multiple domains, as summarized in slide 9.
+
+A. Household Manipulation
+
+LBMs power robots like Tesla Optimus and Figure 01 to perform:
+
+folding laundry
+
+object retrieval and placement
+
+opening doors
+
+preparing items for packaging
+
+These tasks require continuous adaptation and multi-step reasoning.
+
+B. Manufacturing & Logistics
+
+Humanoids equipped with LBMs perform repetitive but variable tasks:
+
+bin picking
+
+part sorting
+
+assembly assistance
+
+pallet movement
+
+BMW and Amazon deployments demonstrate LBMs enabling robots to operate in human-structured workflows.
+
+C. Healthcare & Assistive Robotics
+
+LBMs allow robots to assist with physiotherapy, patient mobility, and rehabilitation tasks. The combination of predictive modeling and compliant control makes them suitable for human-care environments.
+
+D. Hazardous Environments
+
+LBMs allow robots to perform tasks in:
+
+chemical plants
+
+nuclear inspection
+
+post-disaster search
+
+firefighting support
+
+The ability to reason about hazards and adapt dynamically highlights their utility.
+
+IV. DISCUSSION
+A. Generalization Limitations
+
+As described on slide 10, LBMs still struggle with environment shifts. Minor changes in lighting, object texture, or surface friction can break behaviour consistency.
+
+B. Compute and Data Requirements
+
+LBMs require:
+
+multi-million trajectory datasets
+
+GPU clusters for training
+
+high-performance onboard inference chips
+
+This limits adoption in smaller research labs.
+
+C. Safety and Ethical Concerns
+
+LBMs raise concerns regarding:
+
+unpredictable emergent behaviour
+
+physical harm mitigation
+
+shared human–robot workspace safety
+
+transparency and interpretability
+
+D. Toward General Humanoid Foundation Models
+
+Future LBMs may resemble GPT-like general models for embodied behaviour:
+
+universal action vocabulary
+
+cross-robot transfer
+
+lifelong learning
+
+self-supervised physical reasoning
+
+As hardware improves, LBMs will shift from lab prototypes to industrial and consumer humanoids.
+
+V. CONCLUSION
+
+Large Behavioural Models represent a paradigm shift in humanoid robotics. By unifying multi-modal perception, predictive dynamics, and whole-body control, they offer scalable, adaptable, and generalizable robot intelligence. Despite challenges related to safety, compute, and data availability, rapid industrial innovation suggests that LBMs will soon form the backbone of next-generation humanoids operating collaboratively with humans across manufacturing, healthcare, logistics, and domestic environments. Continued progress in simulation fidelity, human–robot interaction, and robotics foundation models will accelerate this transformation.
