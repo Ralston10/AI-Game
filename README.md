@@ -17,21 +17,29 @@ Earth > Water
 Water > Fire
 
 Special abilities & ultimates influence gameplay
+
 - AI adapts based on game state
 - AI System
 - Finite State Machine (FSM)
 
 The AI behavior is controlled using 3 dynamic states:
+
 🔴 Aggressive (HP > 60%)
+
 Focus on high attack
+
 Tries to finish the player quickly
 
 🟡 Reactive (30% < HP ≤ 60%)
+
 Counters player’s last move
+
 Exploits elemental weaknesses
 
 🔵 Defensive (HP ≤ 30%)
+
 Prioritizes survival
+
 Uses high-defense strategies
 
 ⚙️ Rule-Based Decision System
@@ -46,11 +54,17 @@ Survival potential
 The AI selects the card with the highest computed score
 
 🔥 Game Mechanics
+
 🌟 Elemental Abilities
+
 🔥 Fire → Burn (+5 damage)
+
 💧 Water → Armor Break (ignore defense)
+
 🌪️ Air → Swift Strike (1.5x damage when advantaged)
+
 🌍 Earth → Stone Fist (+3 damage)
+
 ⚡ Ultimate System
 
 Builds over time
